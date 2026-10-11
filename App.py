@@ -20,7 +20,7 @@ def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f)
 
-# Dark Desi Custom Styling
+# Dark Desi Custom Styling (Corrected CSS parameter)
 st.markdown("""
     <style>
     .stApp {
@@ -42,7 +42,7 @@ st.markdown("""
         border: none !important;
     }
     </style>
-""", unsafe_allow_allowed_html=True)
+""", unsafe_allow_html=True)
 
 # Desi Meme Logic Engine
 def get_desi_strategy(cycle_day):
@@ -149,7 +149,7 @@ st.markdown(f"""
         <p style="font-size: 1.2rem; color: #ffb703;">{strat['meme']}</p>
         <p style="font-size: 1rem;"><strong>Vibe Report:</strong> {strat['vibe']}</p>
     </div>
-""", unsafe_allow_allowed_html=True)
+""", unsafe_allow_html=True)
 
 # Do's and Don'ts
 col_a, col_b = st.columns(2)
@@ -204,7 +204,7 @@ with tab1:
                         <strong style="color: #ffffff;">{day_num}</strong>{is_today}<br>
                         <small style="color: {s['color']};">{s['clearance'].split(' ')[0]}</small>
                     </div>
-                """, unsafe_allow_allowed_html=True)
+                """, unsafe_allow_html=True)
 
 # TAB 2: OVULATION GAME HUB
 with tab2:
@@ -220,4 +220,3 @@ with tab2:
             st.info(f"### 🍷 {card['title']}\n\nMission Rule:")
     else:
         st.warning(f"🔒 Abhi Next-Level locked hai bhai! Current Mode: **{strat['clearance']}**. Days 11-16 me automatic unlock ho jayega!")
-                                                                                                 
