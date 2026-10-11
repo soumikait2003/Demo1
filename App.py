@@ -4,35 +4,50 @@ import json
 import os
 import random
 import calendar
+import urllib.parse
 
-# Page Configuration - Desi Vibe
-st.set_page_config(page_title="Bande Ka Playbook 🗿", page_icon="🔥", layout="wide")
+# Page Configuration - Clean & Dark Desi Aesthetic
+st.set_page_config(page_title="Bande Ka Playbook", page_icon="🗿", layout="wide")
 
-DATA_FILE = "bandi_cycle.json"
+DATA_FILE = "cycle_data.json"
 
 def load_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
             return json.load(f)
-    return {"last_period_date": str(datetime.today().date()), "cycle_length": 28}
+    return {
+        "last_period_date": str(datetime.today().date()), 
+        "cycle_length": 28,
+        "devotion_points": 50,
+        "city": "Bengaluru",
+        "notes": "Favorite Coffee: Hazelnut Cold Coffee\nFavorite Chocolate: Dark Chocolate 70%\nShoe Size: 6\nFavorite Color: Black"
+    }
 
 def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f)
 
-# Dark Desi Custom Styling (Corrected CSS parameter)
+# Dark Desi Custom Styling
 st.markdown("""
     <style>
     .stApp {
         background-color: #0d090a;
         color: #f1faee;
     }
-    .meme-card {
+    .phase-card {
         background-color: #160b13;
-        padding: 20px;
-        border-radius: 12px;
+        padding: 24px;
+        border-radius: 16px;
         border: 2px solid #e63946;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    .action-box {
+        background-color: #1a0f18;
+        padding: 16px;
+        border-radius: 10px;
+        border-left: 4px solid #e63946;
+        margin-bottom: 10px;
+        font-size: 1rem;
     }
     .stButton>button {
         background-color: #e63946 !important;
@@ -40,148 +55,225 @@ st.markdown("""
         font-weight: bold !important;
         border-radius: 8px !important;
         border: none !important;
+        padding: 10px 20px;
+        width: 100%;
+    }
+    .excuse-box {
+        background-color: #2b0e14;
+        border: 1px dashed #ff4d6d;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+    .concierge-card {
+        background-color: #1f0f18;
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid #ff4d6d;
+        margin-bottom: 15px;
+    }
+    .game-card {
+        background-color: #180a13;
+        padding: 20px;
+        border-radius: 14px;
+        border: 2px solid #2a9d8f;
+        margin-bottom: 15px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Desi Meme Logic Engine
-def get_desi_strategy(cycle_day):
+# Detailed Strategy Engine
+def get_cycle_strategy(cycle_day, total_cycle):
+    ovulation_day = total_cycle - 14
+
     if 1 <= cycle_day <= 5:
         return {
-            "title": "🩸 DAYS 1-5: Khatra Hai Bhai! (Periods)",
-            "clearance": "SERVICE & SEWA MODE 🙇‍♂️",
+            "phase": "Periods / Sewa Mode 🩸",
+            "title": "🩸 DAYS 1-5: Khatra Zone (Sewa & Care)",
             "color": "#e63946",
-            "vibe": "Mood swings 100%, Energy 0%. Dimaag mat chala, bass momos aur hot water bag laa!",
-            "dos": ["Hot water bag ready rakho", "Bina mange uske fav snacks/chocolate le aao", "Har baat me bol: 'Haan tum bilkul sahi bol rahi ho'"],
-            "donts": ["Yeh mat poocho: 'Tum gussa kyun ho?'", "Galti se bhi debate mat jeetne ki koshish karna", "Dost ke saath shaam ko gayab mat hona"],
-            "meme": "“Bhai shaant reh... zinda bachna hai toh aage se bina bole snacks khila de!” 🍫"
+            "summary": "Mood swings 100%, Energy 0%. Dimaag bilkul mat chala, bass momos, chocolate aur hot water bag laa!",
+            "actions": [
+                "**Essential:** Hot water bag ready rakho aur uske favorite snacks/chocolate le aao.",
+                "**The Vibe:** Low-key cozy home setup. Bilkul bahar ghumne ka pressure mat daalo.",
+                "**Golden Rule:** Har baat pe bol: 'Haan tum bilkul sahi bol rahi ho'. Debate bilkul zero."
+            ]
         }
-    elif 6 <= cycle_day <= 10:
+    elif 6 <= cycle_day < ovulation_day - 3:
         return {
-            "title": "🌱 DAYS 6-10: Mausam Suhana Hai (Follicular)",
-            "clearance": "FLIRT & TEASE MODE 😉",
+            "phase": "Flirt & Tease Mode 🌱",
+            "title": "🌱 DAYS 6-10: Mausam Suhana (Rising Energy)",
             "color": "#2a9d8f",
-            "vibe": "Energy waapas aa rahi hai! Bandi ka mood chill hai. Flirting chalu kar do.",
-            "dos": ["Choti-moti tareef kar do (Hair, Outfit)", "Shaam ko chai/coffee date pe le jaao", "Thoda playful leg-pulling chalta hai"],
-            "donts": ["Boriyat mat dikhao", "Old boring baatein mat karo"],
-            "meme": "“Abhi mahaul tight nahi hai, thoda romance aur hassi-mzak pelo!” ✨"
+            "summary": "Energy waapas aa rahi hai! Mood chill hai. Thoda romance aur hassi-mazaak pelo.",
+            "actions": [
+                "**Essential:** Choti-moti tareef kar do (Hair, Outfit) aur shaam ko chai/coffee date pe le jaao.",
+                "**The Vibe:** Playful leg-pulling aur cute reels share karo.",
+                "**Golden Rule:** Spontaneous raho, wo tumhari energy easily match karegi."
+            ]
         }
-    elif 11 <= cycle_day <= 16:
+    elif ovulation_day - 3 <= cycle_day <= ovulation_day + 2:
         return {
-            "title": "🔥 DAYS 11-16: FULL HERO GIRI & NEXT LEVEL (Ovulation Window)",
-            "clearance": "MAXIMUM ATTRACTION & FLIRT 🔥",
+            "phase": "Ovulation Peak Window 🔥",
+            "title": "🔥 OVULATION WINDOW: Full Hero Giri Zone",
             "color": "#ff4d6d",
-            "vibe": "PEAK OVULATION ZONE! Energy High, Confidence High, Romance 200%. Full Hero Banna Hai!",
-            "dos": ["Thoda ready ho ke milne jaao (Perfume maar ke)", "Late night drive ya romantic date plan karo", "Bold flirt aur eye contact maintain karo"],
-            "donts": ["CONFUSED mat raho ('Tum batao kahan chalein?')", "Ghar pe aalas mat maro"],
-            "meme": "“Bhai yeh waqt hai tera! Full Dark Romance aur Hero Giri dikha de!” 😎🍷"
+            "summary": "PEAK OVULATION! Energy High, Confidence High, Attraction 200%. Is time full hero banna hai!",
+            "actions": [
+                "**Action 1 (Total Plan Ownership):** Date, location, aur food pe 100% control le lo. 'Tum batao kahan chalein' bol ke confused mat raho.",
+                "**Action 2 (Grooming & Vibe):** Acche se ready ho ke milne jaao, solid perfume lagao, aur phones bilkul side me rakh do.",
+                "**Action 3 (Deep Connection):** Intense eye contact, bold compliments, aur late-night drive pe 3 deep secrets share karo."
+            ]
         }
     else:
         return {
-            "title": "🌙 DAYS 17-28: Careful Reassurance Zone (Luteal/PMS)",
-            "clearance": "PAMPER & CUDDLE MODE 🧸",
+            "phase": "Pamper & Reassurance Zone 🌙",
+            "title": "🌙 DAYS 17-28: Careful Reassurance Zone",
             "color": "#f4a261",
-            "vibe": "Progesterone high hai. Kabhi pyara mood, kabhi choti baat pe emotional. Reassurance do!",
-            "dos": ["Apni oversized hoodie usko de do", "Bina wajah batao ki wo kitni cute hai", "Uski pasand ka khana order kar do"],
-            "donts": ["Baat-baat pe irritate mat ho", "Usko Akela feel mat hone do"],
-            "meme": "“Thoda sabr rakho bhai... bas pyaar se suno aur pampers baanto!” ☕"
+            "summary": "Hormones shifting. Energy dip ho sakti hai, emotional support aur extra warmth do.",
+            "actions": [
+                "**Essential:** Apni oversized hoodie usko de do aur comfort food order kar do.",
+                "**The Vibe:** Bina kisi wajah ke usko batao ki wo kitni cute hai.",
+                "**Golden Rule:** Akele feel mat hone do, choti-moti frustration smile ke saath absorb kar lo."
+            ]
         }
 
-# Random Desi Roleplay Generator
-DESI_ROLEPLAYS = [
-    {
-        "title": "🍸 'Anjaani Raatein' (Stranger at the Cafe)",
-        "setup": "Ek hi cafe/lounge me alag alag jaao. 10 min baad acting karo ki pehli baar mile ho aur best/worst line se pick up karo."
-    },
-    {
-        "title": "💼 'Strict Boss & Personal Assistant'",
-        "setup": "Aaj raat saare decisions tum loge (Khana, location, timing). Usko bas tumhari baat sunni hai aur tumhein full royal feel deni hai."
-    },
-    {
-        "title": "🚗 'Late Night Drive & Secret Talks'",
-        "setup": "Gadi/Bike nikalo, slow dark-romance songs lagao, aur direct kisi shaant jagah jaake 3 deep secrets share karo."
-    }
+# Data lists
+EXCUSES = [
+    "“Baby sorry, mera dimaag 0% pe kaam kar raha tha kyunki tum paas nahi ho. Direct Zomato se pasand ka khana bhej raha hoon!” 🍕",
+    "“Mera intention bilkul galat nahi tha jaan, mera network aur brain dono weak chal rahe hain aajj. Maaf kar do na?” 🥺",
+    "“Galti ho gayi maharani ji. Saza ke taur pe aaj shaam ko tumhari favorite boba tea meri taraf se.” 🧋",
+    "“Mera irada tumhein irritate karne ka nahi tha... tum gusse me bhi itni cute lagti ho ki dimaag kaam karna band kar deta hai!” 🍫"
 ]
 
-# App Layout
-st.title("🗿 BANDE KA PLAYBOOK: Bandi Ka Cycle Tracker")
-st.caption("Tere liye daily intelligence report ki kab Pamper karna hai, kab Flirt aur kab Next Level jana hai!")
+SNACKS = [
+    "🧋 Unannounced Boba / Cold Coffee drop-off at her place.",
+    "🍫 Dark Chocolate (70%+) + Sweet handwritten note.",
+    "🥟 Momos / Favorite street food evening delivery.",
+    "🍦 Midnight Ice Cream run."
+]
+
+MOOD_DATABASE = {
+    "🩸 Cramps & Low Energy (Sewa Mode)": {
+        "food": "Hot Momos, Cheesy Pizza or Dal Khichdi + Dark Chocolate Brownie 🍫",
+        "food_query": "Momos Pizza Brownie",
+        "movie": "Yeh Jawaani Hai Deewani / 3 Idiots (Pure comfort feel-good comedies) 🍿",
+        "movie_query": "Yeh Jawaani Hai Deewani movie",
+        "ott": "Netflix / Prime Video"
+    },
+    "🌱 Chill & Cozy (Follicular Vibe)": {
+        "food": "Cold Coffee, Peri Peri Fries & White Sauce Pasta 🍝",
+        "food_query": "Cold Coffee Pasta Fries",
+        "movie": "Modern Love / Brooklyn / Light Romantic Comedy ✨",
+        "movie_query": "Modern Love series",
+        "ott": "Netflix / Hotstar"
+    },
+    "🔥 High Energy / Date Night (Ovulation Mode)": {
+        "food": "Sizzlers, Fine Dine Italian (Pasta/Tacos) or Sushi + Mocktails 🍷",
+        "food_query": "Italian Sushi Sizzlers",
+        "movie": "Interstellar / Gone Girl / Thriller or Date Night Romance 🎬",
+        "movie_query": "Interstellar movie",
+        "ott": "Netflix / Apple TV"
+    },
+    "🌙 Emotional / PMS Cushioning": {
+        "food": "Extra Cheese Burger, Ice Cream tub & Her Favorite Milkshake 🍔",
+        "food_query": "Burger Ice Cream Milkshake",
+        "movie": "The Fault in Our Stars / Titanic / Comfort Animation (Disney/Pixar) 🧸",
+        "movie_query": "The Fault in Our Stars movie",
+        "ott": "Disney+ Hotstar / Netflix"
+    }
+}
+
+TRUTHS = [
+    "Pehli baar jab mujhe dekha tha, sach me kya laga tha?",
+    "Meri sabse cute aur sabse irritating habit batao?",
+    "Konsi ek aisi date hai jo tum dobara recreate karna chahogi?",
+    "Koinse outfit me main sabse zyada achha lagta hoon?"
+]
+
+DARES = [
+    "Mujhe direct 10 seconds tak eye-contact karke ek bold compliment do.",
+    "Mere phone pe apni favorite selfie khich ke wallpaper set kar do.",
+    "Mera favorite song 2 lines sing karke sunao.",
+    "Aaj raat ke dinner ka location aur menu tum decide karo!"
+]
+
+# App Header With Custom Tagline
+st.title("🗿 Bande Ka Playbook")
+st.markdown("##### *\"Banda joru ka gulaam nahi, toh dur se salaam!\"* 😎🔥")
+st.caption("Daily intelligence report + Live Food, Movie & Mood-Based Mini Games.")
 
 stored = load_data()
 
-# Secret Setup
-with st.expander("⚙️ Secret Entry: Bandi ki Dates Set Karo", expanded=False):
-    with st.form("set_dates"):
-        c1, c2 = st.columns(2)
-        with c1:
-            p_date = st.date_input("Bandi ki last period date kab thi?", value=datetime.strptime(stored["last_period_date"], "%Y-%m-%d").date())
-        with c2:
-            c_len = st.number_input("Uska cycle kitne din ka hai? (Default: 28)", min_value=20, max_value=45, value=stored.get("cycle_length", 28))
+# Settings Expander
+with st.expander("⚙️ Bandi Ki Settings & City Set Karo", expanded=False):
+    with st.form("settings_form"):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            p_date = st.date_input("Last Period Start Date", value=datetime.strptime(stored["last_period_date"], "%Y-%m-%d").date())
+        with col2:
+            c_len = st.number_input("Cycle Length", min_value=20, max_value=45, value=stored.get("cycle_length", 28))
+        with col3:
+            city_val = st.text_input("Your City (e.g. Bengaluru, Mumbai)", value=stored.get("city", "Bengaluru"))
+            
         if st.form_submit_button("Data Save Karo 🔒"):
-            save_data({"last_period_date": str(p_date), "cycle_length": int(c_len)})
-            st.success("Target set ho gaya bhai! Calculation updated.")
+            stored["last_period_date"] = str(p_date)
+            stored["cycle_length"] = int(c_len)
+            stored["city"] = city_val
+            save_data(stored)
+            st.success("Target set ho gaya bhai!")
             st.rerun()
 
 # Date Math
 start_dt = datetime.strptime(stored["last_period_date"], "%Y-%m-%d").date()
 today = datetime.today().date()
 cycle_len = stored.get("cycle_length", 28)
+user_city = stored.get("city", "Bengaluru")
 
 day_in_cycle = ((today - start_dt).days % cycle_len) + 1
-strat = get_desi_strategy(day_in_cycle)
+strategy = get_cycle_strategy(day_in_cycle, cycle_len)
+ovulation_target = start_dt + timedelta(days=cycle_len - 14)
 
+# Top Metrics & Gamification Score
 st.markdown("---")
-st.subheader("📍 Aaj Ka Daily Briefing (Tere Liye Directive)")
-
-m1, m2, m3 = st.columns(3)
+m1, m2, m3, m4 = st.columns(4)
 with m1:
     st.metric("Cycle Day", f"Day {day_in_cycle} / {cycle_len}")
 with m2:
-    st.metric("Aaj Ka Mode", strat["clearance"])
+    st.metric("Aaj Ka Mode", strategy["phase"])
 with m3:
-    ovulation_day = start_dt + timedelta(days=cycle_len - 14)
-    st.metric("Peak Ovulation Date", ovulation_day.strftime("%b %d"))
+    st.metric("Peak Ovulation Date", ovulation_target.strftime("%b %d"))
+with m4:
+    pts = stored.get("devotion_points", 50)
+    st.metric("Devotion Points ⭐", f"{pts} Pts")
 
-# Main Banner Card
+level = "Level 1: Novice Boyfriend 🐣" if pts < 50 else ("Level 2: Certified Caretaker 🍫" if pts < 100 else "Level 3: Ultimate Dark Romance Master 👑")
+st.caption(f"**Current Rank:** {level}")
+
+# Main Card
 st.markdown(f"""
-    <div class="meme-card">
-        <h2 style="color: {strat['color']};">{strat['title']}</h2>
-        <p style="font-size: 1.2rem; color: #ffb703;">{strat['meme']}</p>
-        <p style="font-size: 1rem;"><strong>Vibe Report:</strong> {strat['vibe']}</p>
+    <div class="phase-card">
+        <h2 style="color: {strategy['color']}; margin-top: 0;">{strategy['title']}</h2>
+        <p style="font-size: 1.1rem; color: #ffb703; margin-bottom: 20px;"><em>"{strategy['summary']}"</em></p>
+        <hr style="border-color: #e63946; margin-bottom: 20px;">
+        <h3 style="color: #f1faee; font-size: 1.2rem; margin-bottom: 15px;">📌 Aaj Ka Action Plan:</h3>
     </div>
 """, unsafe_allow_html=True)
 
-# Do's and Don'ts
-col_a, col_b = st.columns(2)
-with col_a:
-    st.success("### ✅ YE WALI CHEEZEN KARO")
-    for d in strat["dos"]:
-        st.write(f"• {d}")
-
-with col_b:
-    st.error("### ❌ YE GALTI BHI MAT KARNA")
-    for d in strat["donts"]:
-        st.write(f"• {d}")
+for act in strategy["actions"]:
+    st.markdown(f"""
+        <div class="action-box">
+            {act}
+        </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("---")
 
-# TABS
-tab1, tab2 = st.tabs(["🗓️ Pura Mahine Ka Master Calendar", "🔥 Next-Level Ovulation Hub"])
+# Tabs
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🗓️ Calendar", "🍕 Food & Movies", "🎮 Mood Games", "🚨 Emergency Excuse", "🎁 Snack Roulette", "📝 Her Cheatsheet"])
 
 # TAB 1: CALENDAR
 with tab1:
     st.subheader("🗓️ Boyfriend Master Clearance Calendar")
-    st.caption("Rang dekho aur samajh jaao kab kya karna hai!")
-    
     now = datetime.today()
     cal = calendar.monthcalendar(now.year, now.month)
-    
-    # Legend
-    l1, l2, l3, l4 = st.columns(4)
-    l1.markdown("🔴 **Days 1-5:** Sewa Mode")
-    l2.markdown("🟢 **Days 6-10:** Flirt Mode")
-    l3.markdown("🔥 **Days 11-16:** Next Level")
-    l4.markdown("🌙 **Days 17-28:** Pamper Mode")
     
     cols = st.columns(7)
     days_abbr = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -195,28 +287,177 @@ with tab1:
                 cols[idx].write(" ")
             else:
                 date_obj = datetime(now.year, now.month, day_num).date()
-                day_c = ((date_obj - start_dt).days % cycle_len) + 1
-                s = get_desi_strategy(day_c)
+                d_c = ((date_obj - start_dt).days % cycle_len) + 1
+                strat = get_cycle_strategy(d_c, cycle_len)
                 
                 is_today = " (AAJ)" if date_obj == today else ""
                 cols[idx].markdown(f"""
-                    <div style="background-color: #1a0f18; padding: 8px; border-radius: 6px; border-left: 4px solid {s['color']}; margin-bottom: 5px;">
-                        <strong style="color: #ffffff;">{day_num}</strong>{is_today}<br>
-                        <small style="color: {s['color']};">{s['clearance'].split(' ')[0]}</small>
+                    <div style="background-color: #160b13; padding: 10px; border-radius: 8px; border-left: 3px solid {strat['color']}; margin-bottom: 6px;">
+                        <strong style="color: #ffffff;">{day_num}</strong><small>{is_today}</small><br>
+                        <span style="font-size: 0.75rem; color: {strat['color']};">{strat['phase'].split(' ')[0]}</span>
                     </div>
                 """, unsafe_allow_html=True)
 
-# TAB 2: OVULATION GAME HUB
+# TAB 2: LIVE FOOD & MOVIE CONCIERGE
 with tab2:
-    st.subheader("🔥 Ovulation Special: Hero Giri & Roleplay")
-    if 11 <= day_in_cycle <= 16:
-        st.success("🔥 **NEXT-LEVEL CLEARANCE ACTIVE!** Bandi Ovulation Phase me hai, energy full hai!")
+    st.subheader("🍕 Live Food & Movie Smart Concierge")
+    st.write(f"Current Location: **{user_city}** 📍 | Select mood to fetch live delivery & streaming options:")
+    
+    selected_mood = st.selectbox("Select Current Vibe / Phase:", list(MOOD_DATABASE.keys()))
+    rec = MOOD_DATABASE[selected_mood]
+    
+    food_q = urllib.parse.quote(f"{rec['food_query']} near me")
+    zomato_url = f"https://www.zomato.com/{user_city.lower()}/restaurants?q={food_q}"
+    swiggy_url = f"https://www.swiggy.com/search?query={food_q}"
+    
+    movie_q = urllib.parse.quote(rec['movie_query'])
+    netflix_url = f"https://www.netflix.com/search?q={movie_q}"
+    youtube_url = f"https://www.youtube.com/results?search_query={movie_q}"
+    
+    st.markdown(f"""
+        <div class="concierge-card">
+            <h3>🍽️ Recommended Food Pairing:</h3>
+            <p style="font-size: 1.1rem; color: #ffb703; margin-bottom: 15px;">{rec['food']}</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col_z, col_s = st.columns(2)
+    with col_z:
+        st.markdown(f'<a href="{zomato_url}" target="_blank"><button style="background-color: #cb202d; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer;">🔍 Search Live on Zomato</button></a>', unsafe_allow_html=True)
+    with col_s:
+        st.markdown(f'<a href="{swiggy_url}" target="_blank"><button style="background-color: #fc8019; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer;">🔍 Search Live on Swiggy</button></a>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown(f"""
+        <div class="concierge-card">
+            <h3>🍿 Recommended Movie / Show ({rec['ott']}):</h3>
+            <p style="font-size: 1.1rem; color: #48cae4; margin-bottom: 15px;">{rec['movie']}</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    col_n, col_y = st.columns(2)
+    with col_n:
+        st.markdown(f'<a href="{netflix_url}" target="_blank"><button style="background-color: #e50914; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer;">🎬 Search on Netflix / OTT</button></a>', unsafe_allow_html=True)
+    with col_y:
+        st.markdown(f'<a href="{youtube_url}" target="_blank"><button style="background-color: #ff0000; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer;">▶️ Watch Trailer on YouTube</button></a>', unsafe_allow_html=True)
+
+# TAB 3: MOOD-BASED GAME HUB
+with tab3:
+    st.subheader("🎮 Mood-Based Interactive Mini Games")
+    st.write("Aaj ke mood ke hisab se game chunno aur sath me khelo!")
+    
+    game_mode = st.radio("Choose Game Arena:", ["🩸 Cramp Relief Tapper (Periods)", "🌱 Couple Decision Spinner (Chill Mode)", "🔥 Truth or Dare (Ovulation / Date Night)"])
+    
+    if "Cramp Relief" in game_mode:
+        st.markdown("""
+            <div class="game-card">
+                <h3 style="color: #e63946;">🩸 Cramp Relief Tapper Game</h3>
+                <p>Tap the buttons to deliver care and reduce her Cramp Bar to 0%!</p>
+            </div>
+        """, unsafe_allow_html=True)
         
-        if st.button("🎲 Aaj Raat Ka Secret Roleplay Mission Draw Karo"):
-            st.session_state["desi_roleplay"] = random.choice(DESI_ROLEPLAYS)
+        if "cramp_level" not in st.session_state:
+            st.session_state["cramp_level"] = 100
             
-        if "desi_roleplay" in st.session_state:
-            card = st.session_state["desi_roleplay"]
-            st.info(f"### 🍷 {card['title']}\n\nMission Rule:")
-    else:
-        st.warning(f"🔒 Abhi Next-Level locked hai bhai! Current Mode: **{strat['clearance']}**. Days 11-16 me automatic unlock ho jayega!")
+        st.progress(st.session_state["cramp_level"] / 100)
+        st.caption(f"**Current Cramp Bar:** {st.session_state['cramp_level']}%")
+        
+        g1, g2, g3 = st.columns(3)
+        with g1:
+            if st.button("🧸 Offer Hot Water Bag (-20%)"):
+                st.session_state["cramp_level"] = max(0, st.session_state["cramp_level"] - 20)
+                st.rerun()
+        with g2:
+            if st.button("🍫 Feed Dark Chocolate (-25%)"):
+                st.session_state["cramp_level"] = max(0, st.session_state["cramp_level"] - 25)
+                st.rerun()
+        with g3:
+            if st.button("🥟 Order Hot Momos (-30%)"):
+                st.session_state["cramp_level"] = max(0, st.session_state["cramp_level"] - 30)
+                st.rerun()
+                
+        if st.session_state["cramp_level"] == 0:
+            st.balloons()
+            st.success("🎉 CRAMP BAR CLEARED! You earned +20 Devotion Points!")
+            if st.button("Reset Cramp Bar 🔄"):
+                st.session_state["cramp_level"] = 100
+                stored["devotion_points"] = stored.get("devotion_points", 50) + 20
+                save_data(stored)
+                st.rerun()
+
+    elif "Decision Spinner" in game_mode:
+        st.markdown("""
+            <div class="game-card">
+                <h3 style="color: #2a9d8f;">🌱 Couple Decision Wheel</h3>
+                <p>Confusion hai ki aaj raat kya karna hai? Wheel spin karo!</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🎲 Spin Decision Wheel"):
+            decisions = [
+                "🍕 Decision: Today HE orders his choice of food, SHE chooses the movie!",
+                "🍿 Decision: Late night drive + Ice Cream run!",
+                "🍔 Decision: SHE orders her absolute favorite comfort meal!",
+                "🛋️ Decision: No phone evening, 1 hour pure pillow talk!"
+            ]
+            st.info(random.choice(decisions))
+
+    elif "Truth or Dare" in game_mode:
+        st.markdown("""
+            <div class="game-card">
+                <h3 style="color: #ff4d6d;">🔥 Dark Romance Truth or Dare</h3>
+                <p>High-energy date night game to spark romance!</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        td_col1, td_col2 = st.columns(2)
+        with td_col1:
+            if st.button("🔍 Draw Truth Question"):
+                st.session_state["td_res"] = f"**TRUTH:** {random.choice(TRUTHS)}"
+        with td_col2:
+            if st.button("🔥 Draw Dare Mission"):
+                st.session_state["td_res"] = f"**DARE:** {random.choice(DARES)}"
+                
+        if "td_res" in st.session_state:
+            st.warning(st.session_state["td_res"])
+
+# TAB 4: EMERGENCY EXCUSE GENERATOR
+with tab4:
+    st.subheader("🚨 Emergency Apology / Excuse Generator")
+    if st.button("🔥 Generate Emergency Text"):
+        excuse = random.choice(EXCUSES)
+        st.markdown(f"""
+            <div class="excuse-box">
+                <p style="font-size: 1.1rem; color: #ff4d6d; margin: 0;">{excuse}</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+# TAB 5: SNACK ROULETTE & DEVOTION SCORE
+with tab5:
+    st.subheader("🎁 Surprise Snack Roulette")
+    c_btn1, c_btn2 = st.columns(2)
+    with c_btn1:
+        if st.button("🎲 Spin Snack Idea"):
+            st.session_state["snack"] = random.choice(SNACKS)
+    with c_btn2:
+        if st.button("✅ Executed Mission (+10 Devotion Points)"):
+            stored["devotion_points"] = stored.get("devotion_points", 50) + 10
+            save_data(stored)
+            st.success("Points Added! Rank Upgrade Progressed ⭐")
+            st.rerun()
+            
+    if "snack" in st.session_state:
+        st.info(f"### 💡 Recommended Surprise:\n{st.session_state['snack']}")
+
+# TAB 6: HER CHEATSHEET / NOTES
+with tab6:
+    st.subheader("📝 Her Secret Preferences & Notes")
+    current_notes = stored.get("notes", "")
+    updated_notes = st.text_area("Her Favorites / Sizes / Cravings", value=current_notes, height=200)
+    
+    if st.button("Save Cheatsheet 💾"):
+        stored["notes"] = updated_notes
+        save_data(stored)
+        st.success("Cheatsheet updated successfully!")
+        
